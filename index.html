@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced TCE Calculator</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f8f9fa;
+            color: #212529;
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            padding: 20px 0;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 25px 40px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 800px;
+        }
+        h1 {
+            color: #0056b3;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        fieldset {
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+        legend {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #343a40;
+            padding: 0 10px;
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px 25px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        .form-group label {
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #495057;
+        }
+        .form-group input, .form-group select {
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            font-size: 1em;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .input-group {
+            display: flex;
+        }
+        .input-group input {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+        .input-group-text {
+            background-color: #e9ecef;
+            border: 1px solid #ced4da;
+            padding: 10px;
+            border-left: none;
+            border-top-right-radius: 5px;
+            border-bottom-right-radius: 5px;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+        }
+        #result-section {
+            margin-top: 30px;
+            padding: 25px;
+            background-color: #e9f5ff;
+            border: 1px solid #b3d7ff;
+            border-radius: 8px;
+        }
+        #result-section h2 {
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: #004085;
+        }
+        .result-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            font-size: 1.1em;
+        }
+        .result-item {
+            background-color: #fff;
+            padding: 10px 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .result-item strong {
+            color: #0056b3;
+        }
+        #final-tce {
+            grid-column: 1 / -1;
+            text-align: center;
+            font-size: 1.8em;
+            font-weight: bold;
+            padding: 20px;
+            color: #0d6efd;
+            background-color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Advanced TCE Calculator</h1>
+
+        <form id="tceCalculatorAdvanced">
+            
+            <fieldset>
+                <legend>Vessel Performance</legend>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Ballast Leg</label>
+                        <div class="input-group">
+                            <input type="number" id="ballastSpeed" placeholder="Speed (knots)">
+                            <input type="number" id="ballastConsumption" placeholder="Cons (mt/day)">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Laden Leg</label>
+                        <div class="input-group">
+                            <input type="number" id="ladenSpeed" placeholder="Speed (knots)">
+                            <input type="number" id="ladenConsumption" placeholder="Cons (mt/day)">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Port Consumption (Working)</label>
+                        <input type="number" id="workingConsumption" placeholder="Cons (mt/day)">
+                    </div>
+                    <div class="form-group">
+                        <label>Port Consumption (Idle)</label>
+                        <input type="number" id="idleConsumption" placeholder="Cons (mt/day)">
+                    </div>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Voyage & Cargo Information</legend>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Ballast Distance (nm)</label>
+                        <input type="number" id="ballastDistance" placeholder="e.g., 4000">
+                    </div>
+                    <div class="form-group">
+                        <label>Laden Distance (nm)</label>
+                        <input type="number" id="ladenDistance" placeholder="e.g., 4500">
+                    </div>
+                    <div class="form-group">
+                        <label>Sea Margin</label>
+                        <div class="input-group">
+                            <input type="number" id="seaMargin" value="5">
+                            <span class="input-group-text">%</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Cargo Quantity (mt)</label>
+                        <input type="number" id="cargoQuantity" placeholder="e.g., 50000">
+                    </div>
+                    <div class="form-group">
+                        <label>Loading Rate (mt/day)</label>
+                        <input type="number" id="loadingRate" placeholder="e.g., 10000">
+                    </div>
+                    <div class="form-group">
+                        <label>Discharging Rate (mt/day)</label>
+                        <input type="number" id="dischargingRate" placeholder="e.g., 8000">
+                    </div>
+                    <div class="form-group">
+                        <label>Loading Port Turn Time (hrs)</label>
+                        <input type="number" id="loadingTurnTime" value="12">
+                    </div>
+                    <div class="form-group">
+                        <label>Discharging Port Turn Time (hrs)</label>
+                        <input type="number" id="dischargingTurnTime" value="12">
+                    </div>
+                    <div class="form-group">
+                        <label>Port Consumption Mode</label>
+                        <select id="portConsumptionMode">
+                            <option value="working" selected>Working</option>
+                            <option value="idle">Idle</option>
+                        </select>
+                    </div>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Revenue & Costs</legend>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Freight Rate ($/mt)</label>
+                        <input type="number" id="freightRate" placeholder="e.g., 25">
+                    </div>
+                    <div class="form-group">
+                        <label>Total Commission (%)</label>
+                        <input type="number" id="commission" value="3.75">
+                    </div>
+                    <div class="form-group">
+                        <label>Bunker Price ($/mt)</label>
+                        <input type="number" id="bunkerPrice" placeholder="e.g., 600">
+                    </div>
+                    <div class="form-group">
+                        <label>Loading Port Costs ($)</label>
+                        <input type="number" id="loadingPortCost" placeholder="e.g., 75000">
+                    </div>
+                    <div class="form-group">
+                        <label>Discharging Port Costs ($)</label>
+                        <input type="number" id="dischargingPortCost" placeholder="e.g., 75000">
+                    </div>
+                    <div class="form-group">
+                        <label>Other Costs ($)</label>
+                        <input type="number" id="otherCosts" placeholder="e.g., ILOHC, 10000">
+                    </div>
+                </div>
+            </fieldset>
+
+            <button type="button" onclick="calculateAdvancedTce()">Calculate TCE</button>
+        </form>
+
+        <div id="result-section" style="display: none;">
+            <h2>Calculation Summary</h2>
+            <div class="result-grid">
+                <div class="result-item">Total Voyage Days: <strong id="totalDaysResult"></strong></div>
+                <div class="result-item">Total Bunker Cons: <strong id="totalBunkerResult"></strong></div>
+                <div class="result-item">Gross Revenue: <strong id="grossRevenueResult"></strong></div>
+                <div class="result-item">Total Voyage Costs: <strong id="totalCostResult"></strong></div>
+                <div class="result-item">Net Revenue: <strong id="netRevenueResult"></strong></div>
+                <div class="result-item">Net Profit / Day: <strong id="dailyProfitResult"></strong></div>
+                <div id="final-tce"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function getVal(id) {
+            const value = document.getElementById(id).value;
+            return parseFloat(value) || 0;
+        }
+
+        function calculateAdvancedTce() {
+            // --- 1. Get all input values ---
+            // Performance
+            const ballastSpeed = getVal('ballastSpeed');
+            const ballastConsumption = getVal('ballastConsumption');
+            const ladenSpeed = getVal('ladenSpeed');
+            const ladenConsumption = getVal('ladenConsumption');
+            const workingConsumption = getVal('workingConsumption');
+            const idleConsumption = getVal('idleConsumption');
+            
+            // Voyage
+            const ballastDistance = getVal('ballastDistance');
+            const ladenDistance = getVal('ladenDistance');
+            const seaMargin = getVal('seaMargin') / 100;
+            const cargoQuantity = getVal('cargoQuantity');
+            
+            // Cargo Ops
+            const loadingRate = getVal('loadingRate');
+            const dischargingRate = getVal('dischargingRate');
+            const loadingTurnTime = getVal('loadingTurnTime');
+            const dischargingTurnTime = getVal('dischargingTurnTime');
+            const portConsumptionMode = document.getElementById('portConsumptionMode').value;
+
+            // Costs
+            const freightRate = getVal('freightRate');
+            const commissionPercent = getVal('commission') / 100;
+            const bunkerPrice = getVal('bunkerPrice');
+            const loadingPortCost = getVal('loadingPortCost');
+            const dischargingPortCost = getVal('dischargingPortCost');
+            const otherCosts = getVal('otherCosts');
+
+            // --- 2. Core Calculations ---
+
+            // a. Calculate sea days
+            const ballastDays = ballastSpeed > 0 ? ballastDistance / (ballastSpeed * 24) : 0;
+            const ladenDays = ladenSpeed > 0 ? ladenDistance / (ladenSpeed * 24) : 0;
+            const totalSeaDays = ballastDays + ladenDays;
+            const totalSeaDaysWithMargin = totalSeaDays * (1 + seaMargin);
+            
+            // b. Calculate port days
+            const loadingDays = loadingRate > 0 ? cargoQuantity / loadingRate : 0;
+            const dischargingDays = dischargingRate > 0 ? cargoQuantity / dischargingRate : 0;
+            const totalTurnTimeDays = (loadingTurnTime + dischargingTurnTime) / 24;
+            const totalPortDays = loadingDays + dischargingDays + totalTurnTimeDays;
+
+            // c. Calculate total voyage days
+            const totalVoyageDays = totalSeaDaysWithMargin + totalPortDays;
+
+            // d. Calculate bunker consumption
+            const seaBunkerConsumption = (ballastDays * ballastConsumption + ladenDays * ladenConsumption) * (1 + seaMargin);
+            const portConsumptionRate = portConsumptionMode === 'working' ? workingConsumption : idleConsumption;
+            const portBunkerConsumption = totalPortDays * portConsumptionRate;
+            const totalBunkerConsumed = seaBunkerConsumption + portBunkerConsumption;
+
+            // e. Calculate total costs
+            const totalBunkerCost = totalBunkerConsumed * bunkerPrice;
+            const grossRevenue = freightRate * cargoQuantity;
+            const totalCommissionCost = grossRevenue * commissionPercent;
+            const totalPortCosts = loadingPortCost + dischargingPortCost;
+            const totalVoyageCosts = totalBunkerCost + totalPortCosts + totalCommissionCost + otherCosts;
+
+            // f. Calculate Net Revenue and TCE
+            const netRevenue = grossRevenue - totalVoyageCosts;
+            const tce = totalVoyageDays > 0 ? netRevenue / totalVoyageDays : 0;
+
+            // --- 3. Display Results ---
+            document.getElementById('result-section').style.display = 'block';
+
+            document.getElementById('totalDaysResult').innerText = `${totalVoyageDays.toFixed(2)} days`;
+            document.getElementById('totalBunkerResult').innerText = `${totalBunkerConsumed.toFixed(2)} mt`;
+            document.getElementById('grossRevenueResult').innerText = `$${grossRevenue.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            document.getElementById('totalCostResult').innerText = `$${totalVoyageCosts.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            document.getElementById('netRevenueResult').innerText = `$${netRevenue.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            document.getElementById('dailyProfitResult').innerText = `$${tce.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+
+            const finalTceDiv = document.getElementById('final-tce');
+            if (isNaN(tce) || !isFinite(tce)) {
+                finalTceDiv.innerText = 'Please enter valid numbers to complete the calculation';
+                finalTceDiv.style.color = '#dc3545';
+            } else {
+                finalTceDiv.innerHTML = `TCE: <strong>$${tce.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</strong> /day`;
+                finalTceDiv.style.color = '#0d6efd';
+            }
+        }
+    </script>
+</body>
+</html>
